@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Imprimante PDF</title>
+    <meta name="description" content="Playground simple pour imprimer des PDF" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.lime.min.css"
+    />
+    <style>
+      .error {
+        color: #dc3545;
+        font-weight: 700;
+      }
+
+      .success {
+        color: #28a745;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body class="container">
+    <header>
+      <h1>Playground Imprimante Hesperide</h1>
+    </header>
+
+    <main>
+      <article>
+        <h2>Impression PDF</h2>
+        <fieldset>
+          <legend>Selectionner un billet :</legend>
+          <label>
+            <input type="radio" name="ticketSelect" value="default" checked />
+            Billet PDF par defaut
+          </label>
+          <label>
+            <input type="radio" name="ticketSelect" value="no-margin" />
+            Billet sans marge
+          </label>
+          <label>
+            <input type="radio" name="ticketSelect" value="custom" />
+            URL personnalisee
+          </label>
+        </fieldset>
+
+        <label for="pdfUrl">URL du PDF :</label>
+        <input
+          type="url"
+          id="pdfUrl"
+          placeholder="Entrez l'URL du fichier PDF..."
+          readonly
+        />
+
+        <button id="printButton" type="button">Imprimer le PDF</button>
+        <div id="pdfStatus" style="margin-top: 0.75rem"></div>
+      </article>
+
+      <article>
+        <h2>Journal</h2>
+        <button class="outline secondary" id="clearLogButton" type="button">
+          Effacer le journal
+        </button>
+        <pre id="log"></pre>
+      </article>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
