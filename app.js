@@ -128,6 +128,45 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  async function reconnectPrinter(source = "http://localhost:8080") {
+    log("Tentative de reconnexion via /reconnect ...");
+    if (statusLast) statusLast.textContent = "Tentative de reconnexion ...";
+
+    try {
+      const response = await fetch(`${source}/reconnect`, { method: "GET" });
+
+      const contentType = response.headers.get("content-type") || "";
+      let payload;
+      if (contentType.includes("application/json")) {
+        payload = await response.json();
+      } else {
+        payload = await response.text();
+      }
+
+      if (!response.ok) {
+        const message =
+          typeof payload === "string"
+            ? payload
+            : JSON.stringify(payload, null, 2);
+        throw new Error(message || `HTTP error! status: ${response.status}`);
+      }
+
+      const rendered =
+        typeof payload === "string"
+          ? payload
+          : JSON.stringify(payload, null, 2);
+
+      if (statusLast)
+        statusLast.innerHTML = `<pre style="white-space: pre-wrap; margin: 0">${rendered}</pre>`;
+      log(`/reconnect: ${rendered}`);
+    } catch (error) {
+      if (statusLast) {
+        statusLast.innerHTML = `<span class="error">Erreur /reconnect : ${error.message}</span>`;
+      }
+      log(`Erreur /reconnect : ${error.message}`);
+    }
+  }
+
   ticketRadios.forEach((radio) => radio.addEventListener("change", updatePdfUrl));
   clearLogButton.addEventListener("click", clearLog);
   printButton.addEventListener("click", () => {
@@ -139,4 +178,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updatePdfUrl();
   log("Site web charge et pret.");
+  reconnectPrinter();
 });
