@@ -167,6 +167,124 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // ---- Device ----
+
+  async function callDevice(path, method = "GET") {
+    const source = "http://localhost:8080";
+    log(`${method} ${path} ...`);
+    const deviceResult = document.getElementById("deviceResult");
+    try {
+      const response = await fetch(`${source}${path}`, { method, headers: { "Content-Type": "application/json" } });
+      const contentType = response.headers.get("content-type") || "";
+      const payload = contentType.includes("application/json") ? await response.json() : await response.text();
+      const rendered = typeof payload === "string" ? payload : JSON.stringify(payload, null, 2);
+      if (!response.ok) throw new Error(rendered);
+      if (deviceResult) deviceResult.innerHTML = `<pre style="white-space:pre-wrap;margin:0">${rendered}</pre>`;
+      log(`OK ${path} : ${rendered}`);
+    } catch (err) {
+      if (deviceResult) deviceResult.innerHTML = `<span class="error">Erreur ${path} : ${err.message}</span>`;
+      log(`Erreur ${path} : ${err.message}`);
+    }
+  }
+
+  // ---- Apps ----
+
+  async function fetchAppsList(source = "http://localhost:8080") {
+    log("GET /apps ...");
+    const appsResult = document.getElementById("appsResult");
+    try {
+      const response = await fetch(`${source}/apps`, { method: "GET" });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(JSON.stringify(payload));
+      const rendered = JSON.stringify(payload, null, 2);
+      if (appsResult) appsResult.innerHTML = `<pre style="white-space:pre-wrap;margin:0">${rendered}</pre>`;
+      log(`OK /apps : ${rendered}`);
+    } catch (err) {
+      if (appsResult) appsResult.innerHTML = `<span class="error">Erreur /apps : ${err.message}</span>`;
+      log(`Erreur /apps : ${err.message}`);
+    }
+  }
+
+  async function launchApp(query, source = "http://localhost:8080") {
+    log(`POST /apps/launch query="${query}" ...`);
+    const appsResult = document.getElementById("appsResult");
+    try {
+      const response = await fetch(`${source}/apps/launch`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query }),
+      });
+      const payload = await response.json();
+      const rendered = JSON.stringify(payload, null, 2);
+      if (!response.ok) throw new Error(rendered);
+      if (appsResult) appsResult.innerHTML = `<pre style="white-space:pre-wrap;margin:0">${rendered}</pre>`;
+      log(`OK /apps/launch : ${rendered}`);
+    } catch (err) {
+      if (appsResult) appsResult.innerHTML = `<span class="error">Erreur /apps/launch : ${err.message}</span>`;
+      log(`Erreur /apps/launch : ${err.message}`);
+    }
+  }
+
+  // ---- Shell ----
+
+  async function runShell(command, source = "http://localhost:8080") {
+    log(`POST /shell command="${command}" ...`);
+    const shellResult = document.getElementById("shellResult");
+    try {
+      const response = await fetch(`${source}/shell`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ command }),
+      });
+      const payload = await response.json();
+      const rendered = JSON.stringify(payload, null, 2);
+      if (!response.ok) throw new Error(rendered);
+      if (shellResult) shellResult.innerHTML = `<pre style="white-space:pre-wrap;margin:0">${rendered}</pre>`;
+      log(`OK /shell : ${rendered}`);
+    } catch (err) {
+      if (shellResult) shellResult.innerHTML = `<span class="error">Erreur /shell : ${err.message}</span>`;
+      log(`Erreur /shell : ${err.message}`);
+    }
+  }
+
+  // ---- Simulator ----
+
+  async function fetchSimStates(source = "http://localhost:8080") {
+    log("GET /simulator/states ...");
+    const simResult = document.getElementById("simResult");
+    try {
+      const response = await fetch(`${source}/simulator/states`, { method: "GET" });
+      const payload = await response.json();
+      const rendered = JSON.stringify(payload, null, 2);
+      if (!response.ok) throw new Error(rendered);
+      if (simResult) simResult.innerHTML = `<pre style="white-space:pre-wrap;margin:0">${rendered}</pre>`;
+      log(`OK /simulator/states : ${rendered}`);
+    } catch (err) {
+      if (simResult) simResult.innerHTML = `<span class="error">Erreur /simulator/states : ${err.message}</span>`;
+      log(`Erreur /simulator/states : ${err.message}`);
+    }
+  }
+
+  async function setSimState(state, source = "http://localhost:8080") {
+    log(`POST /simulator/state state="${state}" ...`);
+    const simResult = document.getElementById("simResult");
+    try {
+      const response = await fetch(`${source}/simulator/state`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ state }),
+      });
+      const payload = await response.json();
+      const rendered = JSON.stringify(payload, null, 2);
+      if (!response.ok) throw new Error(rendered);
+      if (simResult) simResult.innerHTML = `<pre style="white-space:pre-wrap;margin:0">${rendered}</pre>`;
+      log(`OK /simulator/state : ${rendered}`);
+    } catch (err) {
+      if (simResult) simResult.innerHTML = `<span class="error">Erreur /simulator/state : ${err.message}</span>`;
+      log(`Erreur /simulator/state : ${err.message}`);
+    }
+  }
+
   ticketRadios.forEach((radio) => radio.addEventListener("change", updatePdfUrl));
   clearLogButton.addEventListener("click", clearLog);
   printButton.addEventListener("click", () => {
@@ -174,6 +292,33 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   statusButton?.addEventListener("click", () => {
     fetchStatus();
+  });
+
+  document.getElementById("deviceInfoButton")?.addEventListener("click", () => callDevice("/device/info", "GET"));
+  document.getElementById("deviceHomeButton")?.addEventListener("click", () => callDevice("/device/home", "POST"));
+  document.getElementById("deviceSettingsButton")?.addEventListener("click", () => callDevice("/device/settings", "POST"));
+
+  document.getElementById("appsListButton")?.addEventListener("click", () => fetchAppsList());
+  document.getElementById("appsLaunchButton")?.addEventListener("click", () => {
+    const query = document.getElementById("appQuery")?.value.trim();
+    if (query) launchApp(query);
+  });
+
+  document.getElementById("shellButton")?.addEventListener("click", () => {
+    const command = document.getElementById("shellCommand")?.value.trim();
+    if (command) runShell(command);
+  });
+  document.getElementById("shellCommand")?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const command = e.target.value.trim();
+      if (command) runShell(command);
+    }
+  });
+
+  document.getElementById("simStatesButton")?.addEventListener("click", () => fetchSimStates());
+  document.getElementById("simSetStateButton")?.addEventListener("click", () => {
+    const state = document.getElementById("simStateSelect")?.value;
+    if (state) setSimState(state);
   });
 
   updatePdfUrl();

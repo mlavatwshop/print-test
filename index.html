@@ -76,6 +76,54 @@
         </button>
         <div id="statusLast" style="margin-top: 0.75rem"></div>
       </article>
+
+      <article>
+        <h2>Appareil</h2>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap">
+          <button class="outline secondary" id="deviceInfoButton" type="button">GET /device/info</button>
+          <button class="outline secondary" id="deviceHomeButton" type="button">POST /device/home</button>
+          <button class="outline secondary" id="deviceSettingsButton" type="button">POST /device/settings</button>
+        </div>
+        <div id="deviceResult" style="margin-top: 0.75rem"></div>
+      </article>
+
+      <article>
+        <h2>Applications</h2>
+        <button class="outline secondary" id="appsListButton" type="button">GET /apps</button>
+        <label for="appQuery" style="margin-top: 0.75rem">Lancer une app (nom ou package) :</label>
+        <div style="display: flex; gap: 0.5rem">
+          <input type="text" id="appQuery" placeholder="ex: Chrome ou com.android.chrome" />
+          <button id="appsLaunchButton" type="button">Lancer</button>
+        </div>
+        <div id="appsResult" style="margin-top: 0.75rem"></div>
+      </article>
+
+      <article>
+        <h2>Shell</h2>
+        <label for="shellCommand">Commande :</label>
+        <div style="display: flex; gap: 0.5rem">
+          <input type="text" id="shellCommand" placeholder="ex: date" />
+          <button id="shellButton" type="button">Executer</button>
+        </div>
+        <div id="shellResult" style="margin-top: 0.75rem"></div>
+      </article>
+
+      <article>
+        <h2>Simulateur</h2>
+        <button class="outline secondary" id="simStatesButton" type="button">GET /simulator/states</button>
+        <label for="simStateSelect" style="margin-top: 0.75rem">Changer l'etat :</label>
+        <div style="display: flex; gap: 0.5rem">
+          <select id="simStateSelect">
+            <option value="ready">ready</option>
+            <option value="up_not_connected">up_not_connected</option>
+            <option value="offline">offline</option>
+            <option value="busy">busy</option>
+            <option value="error">error</option>
+          </select>
+          <button id="simSetStateButton" type="button">Appliquer</button>
+        </div>
+        <div id="simResult" style="margin-top: 0.75rem"></div>
+      </article>
     </main>
 
     <script src="./app.js"></script>

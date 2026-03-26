@@ -27,7 +27,7 @@
 
       .topbar {
         position: fixed;
-        top: 0;
+        top: 1.6rem;
         left: 0;
         right: 0;
         z-index: 10;
@@ -66,7 +66,7 @@
       .layout {
         height: 100%;
         width: 100%;
-        padding-top: 3.2rem; /* topbar height */
+        padding-top: 4.8rem; /* marquee + topbar height */
         display: grid;
         grid-template-columns: 340px 1fr;
       }
@@ -144,9 +144,33 @@
         background: rgba(255, 255, 255, 0.04);
         color: rgba(215, 224, 255, 0.8);
       }
+
+      .marquee-banner {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 20;
+        background: rgba(160, 20, 20, 0.9);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 0.28rem 0;
+        height: 1.6rem;
+        line-height: 1rem;
+      }
+
+      .marquee-banner marquee {
+        color: #fff;
+      }
     </style>
   </head>
   <body>
+    <div class="marquee-banner">
+      <marquee>SVP NE PAS TOUCHER &nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp; SVP NE PAS TOUCHER &nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp; SVP NE PAS TOUCHER &nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp; SVP NE PAS TOUCHER</marquee>
+    </div>
     <div class="topbar">
       <div class="links">
         <a href="./index.html">Index</a>
