@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (statusLast) statusLast.textContent = "Tentative de reconnexion ...";
 
     try {
-      const response = await fetch(`${source}/reconnect`, { method: "GET" });
+      const response = await fetch(`${source}/reconnect`, { method: "POST" });
 
       const contentType = response.headers.get("content-type") || "";
       let payload;
