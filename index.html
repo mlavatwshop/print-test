@@ -23,7 +23,7 @@
   </head>
   <body class="container">
     <header>
-      <h1>Playground Imprimante Hesperide</h1>
+      <h1>Printer playground</h1>
       <nav style="margin-top: 0.5rem">
         <a href="./index.html" aria-current="page">Index</a>
         <a href="./keep-alive.html">Keep-alive</a>
@@ -74,28 +74,14 @@
         <button class="outline secondary" id="statusButton" type="button">
           Appeler `GET /status`
         </button>
+        <button id="reconnectButton" type="button">Reconnecter l'imprimante</button>
         <div id="statusLast" style="margin-top: 0.75rem"></div>
       </article>
 
       <article>
-        <h2>Appareil</h2>
-        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap">
-          <button class="outline secondary" id="deviceInfoButton" type="button">GET /device/info</button>
-          <button class="outline secondary" id="deviceHomeButton" type="button">POST /device/home</button>
-          <button class="outline secondary" id="deviceSettingsButton" type="button">POST /device/settings</button>
-        </div>
-        <div id="deviceResult" style="margin-top: 0.75rem"></div>
-      </article>
-
-      <article>
-        <h2>Applications</h2>
-        <button class="outline secondary" id="appsListButton" type="button">GET /apps</button>
-        <label for="appQuery" style="margin-top: 0.75rem">Lancer une app (nom ou package) :</label>
-        <div style="display: flex; gap: 0.5rem">
-          <input type="text" id="appQuery" placeholder="ex: Chrome ou com.android.chrome" />
-          <button id="appsLaunchButton" type="button">Lancer</button>
-        </div>
-        <div id="appsResult" style="margin-top: 0.75rem"></div>
+        <h2>Permissions</h2>
+        <button class="outline secondary" id="batteryOptimizationButton" type="button">POST /setup/battery-optimization</button>
+        <div id="setupResult" style="margin-top: 0.75rem"></div>
       </article>
 
       <article>

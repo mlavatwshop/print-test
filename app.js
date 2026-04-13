@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const clearLogButton = document.getElementById("clearLogButton");
   const printButton = document.getElementById("printButton");
   const statusButton = document.getElementById("statusButton");
+  const reconnectButton = document.getElementById("reconnectButton");
   const statusLast = document.getElementById("statusLast");
   const ticketRadios = document.querySelectorAll('input[name="ticketSelect"]');
 
@@ -167,61 +168,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ---- Device ----
-
-  async function callDevice(path, method = "GET") {
+  async function callSetup(path, method = "POST") {
     const source = "http://localhost:8080";
     log(`${method} ${path} ...`);
-    const deviceResult = document.getElementById("deviceResult");
+    const setupResult = document.getElementById("setupResult");
     try {
-      const response = await fetch(`${source}${path}`, { method, headers: { "Content-Type": "application/json" } });
+      const response = await fetch(`${source}${path}`, {
+        method,
+        headers: { "Content-Type": "application/json" },
+      });
       const contentType = response.headers.get("content-type") || "";
-      const payload = contentType.includes("application/json") ? await response.json() : await response.text();
-      const rendered = typeof payload === "string" ? payload : JSON.stringify(payload, null, 2);
+      const payload = contentType.includes("application/json")
+        ? await response.json()
+        : await response.text();
+      const rendered =
+        typeof payload === "string" ? payload : JSON.stringify(payload, null, 2);
       if (!response.ok) throw new Error(rendered);
-      if (deviceResult) deviceResult.innerHTML = `<pre style="white-space:pre-wrap;margin:0">${rendered}</pre>`;
+      if (setupResult)
+        setupResult.innerHTML = `<pre style="white-space:pre-wrap;margin:0">${rendered}</pre>`;
       log(`OK ${path} : ${rendered}`);
     } catch (err) {
-      if (deviceResult) deviceResult.innerHTML = `<span class="error">Erreur ${path} : ${err.message}</span>`;
+      if (setupResult)
+        setupResult.innerHTML = `<span class="error">Erreur ${path} : ${err.message}</span>`;
       log(`Erreur ${path} : ${err.message}`);
-    }
-  }
-
-  // ---- Apps ----
-
-  async function fetchAppsList(source = "http://localhost:8080") {
-    log("GET /apps ...");
-    const appsResult = document.getElementById("appsResult");
-    try {
-      const response = await fetch(`${source}/apps`, { method: "GET" });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(JSON.stringify(payload));
-      const rendered = JSON.stringify(payload, null, 2);
-      if (appsResult) appsResult.innerHTML = `<pre style="white-space:pre-wrap;margin:0">${rendered}</pre>`;
-      log(`OK /apps : ${rendered}`);
-    } catch (err) {
-      if (appsResult) appsResult.innerHTML = `<span class="error">Erreur /apps : ${err.message}</span>`;
-      log(`Erreur /apps : ${err.message}`);
-    }
-  }
-
-  async function launchApp(query, source = "http://localhost:8080") {
-    log(`POST /apps/launch query="${query}" ...`);
-    const appsResult = document.getElementById("appsResult");
-    try {
-      const response = await fetch(`${source}/apps/launch`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),
-      });
-      const payload = await response.json();
-      const rendered = JSON.stringify(payload, null, 2);
-      if (!response.ok) throw new Error(rendered);
-      if (appsResult) appsResult.innerHTML = `<pre style="white-space:pre-wrap;margin:0">${rendered}</pre>`;
-      log(`OK /apps/launch : ${rendered}`);
-    } catch (err) {
-      if (appsResult) appsResult.innerHTML = `<span class="error">Erreur /apps/launch : ${err.message}</span>`;
-      log(`Erreur /apps/launch : ${err.message}`);
     }
   }
 
@@ -293,16 +262,13 @@ document.addEventListener("DOMContentLoaded", () => {
   statusButton?.addEventListener("click", () => {
     fetchStatus();
   });
-
-  document.getElementById("deviceInfoButton")?.addEventListener("click", () => callDevice("/device/info", "GET"));
-  document.getElementById("deviceHomeButton")?.addEventListener("click", () => callDevice("/device/home", "POST"));
-  document.getElementById("deviceSettingsButton")?.addEventListener("click", () => callDevice("/device/settings", "POST"));
-
-  document.getElementById("appsListButton")?.addEventListener("click", () => fetchAppsList());
-  document.getElementById("appsLaunchButton")?.addEventListener("click", () => {
-    const query = document.getElementById("appQuery")?.value.trim();
-    if (query) launchApp(query);
+  reconnectButton?.addEventListener("click", () => {
+    reconnectPrinter();
   });
+
+  document.getElementById("batteryOptimizationButton")?.addEventListener("click", () =>
+    callSetup("/setup/battery-optimization", "POST")
+  );
 
   document.getElementById("shellButton")?.addEventListener("click", () => {
     const command = document.getElementById("shellCommand")?.value.trim();
@@ -323,5 +289,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updatePdfUrl();
   log("Site web charge et pret.");
-  reconnectPrinter();
 });
